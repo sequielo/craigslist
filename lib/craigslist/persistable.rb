@@ -52,6 +52,30 @@ module Craigslist
       Craigslist::Scrape::HTML::scrape_data_from_page get_uri_data, max_results, options
     end
 
+    # Fetches results with Nokogiri using initialized attributes from the
+    # Persistable
+    #
+    # @param page_number [Integer]
+    # @return [Array]
+    def fetch_page(page_number)
+      raise InsufficientQueryAttributesError.new if
+        @city.nil? || @category_path.nil?
+
+      options = {
+        query: @query,
+        search_type: @search_type,
+        min_ask: @min_ask,
+        max_ask: @max_ask,
+        bedrooms: @bedrooms,
+        has_image: @has_image,
+        neighborhoods: @neighborhoods
+      }
+
+      #Build uri only
+      #Craigslist::Net::build_uri(@city, @county, @category_path, options)
+      Craigslist::Scrape::HTML::scrape_data_from_page_number get_uri_data, page_number, options
+    end
+
     # Returns results for fetching
     # Persistable
     #

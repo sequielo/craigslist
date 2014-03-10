@@ -1,5 +1,16 @@
 module Craigslist::Scrape::HTML
   class << self
+    def scrape_data_from_page_number uri_data, page_number, options
+      results = []
+      uri = get_uri_for_fetch(uri_data, options, page_number)
+      doc = Nokogiri::HTML(open(uri))
+
+      doc.css('p.row').each do |node|
+        results << scrape_data_from_row(node)
+      end
+      results
+    end
+
     def scrape_data_from_page uri_data, max_results, options
       results = []
       get_uris_for_fetch(uri_data, max_results, options).each do |uri|
